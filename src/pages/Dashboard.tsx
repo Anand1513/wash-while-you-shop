@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
-import { Car, Clock, Star, Camera, Calendar, Award } from "lucide-react";
+import { Car, Clock, Star, Camera, Calendar, Award, Users, Share2, Gift } from "lucide-react";
 
 interface CarWash {
   id: string;
@@ -196,67 +195,127 @@ const Dashboard = () => {
           </Card>
         )}
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link to="/book-wash">
-              <CardHeader>
-                <Calendar className="h-8 w-8 text-blue-600 mb-2" />
-                <CardTitle>Book a Wash</CardTitle>
-                <CardDescription>Schedule a car wash manually or check auto-detection status</CardDescription>
-              </CardHeader>
-            </Link>
-          </Card>
+        {/* Main Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Quick Actions */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <Link to="/book-wash">
+                  <CardHeader>
+                    <Calendar className="h-8 w-8 text-blue-600 mb-2" />
+                    <CardTitle>Book a Wash</CardTitle>
+                    <CardDescription>Schedule a car wash manually or check auto-detection status</CardDescription>
+                  </CardHeader>
+                </Link>
+              </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link to="/subscription">
-              <CardHeader>
-                <Star className="h-8 w-8 text-yellow-600 mb-2" />
-                <CardTitle>Upgrade Plan</CardTitle>
-                <CardDescription>Get more washes and premium features with our subscription plans</CardDescription>
-              </CardHeader>
-            </Link>
-          </Card>
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <Link to="/rewards">
+                  <CardHeader>
+                    <Star className="h-8 w-8 text-yellow-600 mb-2" />
+                    <CardTitle>Rewards Store</CardTitle>
+                    <CardDescription>Redeem your {user.loyaltyPoints} points for amazing rewards</CardDescription>
+                  </CardHeader>
+                </Link>
+              </Card>
 
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link to="/wallet">
-              <CardHeader>
-                <span className="text-2xl mb-2">💰</span>
-                <CardTitle>Top-up Wallet</CardTitle>
-                <CardDescription>Add money to your wallet and get exclusive cashback offers</CardDescription>
-              </CardHeader>
-            </Link>
-          </Card>
-        </div>
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <Link to="/wallet">
+                  <CardHeader>
+                    <span className="text-2xl mb-2">💰</span>
+                    <CardTitle>Top-up Wallet</CardTitle>
+                    <CardDescription>Add money to your wallet and get exclusive cashback offers</CardDescription>
+                  </CardHeader>
+                </Link>
+              </Card>
+            </div>
 
-        {/* Recent Washes */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Washes</CardTitle>
-            <CardDescription>Your car wash history</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentWashes.map((wash) => (
-                <div key={wash.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-3 h-3 rounded-full ${getStatusColor(wash.status)}`}></div>
-                    <div>
-                      <div className="font-medium">{wash.carModel} - {wash.washType}</div>
-                      <div className="text-sm text-gray-600">{wash.location}</div>
+            {/* Recent Washes */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Washes</CardTitle>
+                <CardDescription>Your car wash history</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {recentWashes.map((wash) => (
+                    <div key={wash.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-4">
+                        <div className={`w-3 h-3 rounded-full ${getStatusColor(wash.status)}`}></div>
+                        <div>
+                          <div className="font-medium">{wash.carModel} - {wash.washType}</div>
+                          <div className="text-sm text-gray-600">{wash.location}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-medium">
+                          {new Date(wash.startTime).toLocaleDateString()}
+                        </div>
+                        <div className="text-sm text-gray-600 capitalize">{wash.status}</div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm font-medium">
-                      {new Date(wash.startTime).toLocaleDateString()}
-                    </div>
-                    <div className="text-sm text-gray-600 capitalize">{wash.status}</div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Widgets */}
+          <div className="space-y-6">
+            {/* Quick Rebook Widget */}
+            <QuickRebookWidget />
+
+            {/* Referral System Preview */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Refer & Earn
+                </CardTitle>
+                <CardDescription>Invite friends and earn 300 points each!</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-600 mb-1">300 Points</div>
+                    <div className="text-sm text-purple-800">Per successful referral</div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                <Link to="/profile">
+                  <Button className="w-full">
+                    <Share2 className="mr-2 h-4 w-4" />
+                    View Referral Program
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* Points Progress */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Next Reward Goal</CardTitle>
+                <CardDescription>You're close to your next free wash!</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-blue-600">
+                    {500 - (user.loyaltyPoints % 500)} points to go
+                  </div>
+                  <div className="text-sm text-gray-600">Until your next free basic wash</div>
+                </div>
+                <Progress value={(user.loyaltyPoints % 500) / 500 * 100} />
+                <Link to="/rewards">
+                  <Button variant="outline" className="w-full">
+                    <Gift className="mr-2 h-4 w-4" />
+                    View All Rewards
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </Layout>
   );
