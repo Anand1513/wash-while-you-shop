@@ -1,10 +1,9 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
-import { Car, User, Star, Calendar, Camera, Dollar } from "lucide-react";
+import { Car, User, Star, Calendar, Camera, DollarSign } from "lucide-react";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth();
@@ -19,7 +18,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     { path: "/book-wash", label: "Book Wash", icon: Calendar },
     { path: "/track-wash", label: "Track Wash", icon: Camera },
     { path: "/subscription", label: "Subscription", icon: Star },
-    { path: "/wallet", label: "Wallet", icon: Dollar },
+    { path: "/wallet", label: "Wallet", icon: DollarSign },
     { path: "/profile", label: "Profile", icon: User },
   ];
 
