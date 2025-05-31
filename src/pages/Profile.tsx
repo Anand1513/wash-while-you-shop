@@ -1,23 +1,55 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Layout from "@/components/Layout";
 import { useAuth } from "@/contexts/AuthContext";
 import { User, Car, Star, Award, Bell, Camera } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
+interface CarData {
+  id: string;
+  make: string;
+  model: string;
+  color: string;
+  licensePlate: string;
+  addedDate: string;
+  washCount: number;
+  isPrimary: boolean;
+}
+
 const Profile = () => {
   const { user, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [isAddCarOpen, setIsAddCarOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || ''
   });
+  
+  const [carFormData, setCarFormData] = useState({
+    make: '',
+    model: '',
+    color: '',
+    licensePlate: ''
+  });
+
+  const [cars, setCars] = useState<CarData[]>([
+    {
+      id: '1',
+      make: 'Honda',
+      model: 'City',
+      color: 'White',
+      licensePlate: 'DL 01 XX 1234',
+      addedDate: 'Jan 15, 2024',
+      washCount: 47,
+      isPrimary: true
+    }
+  ]);
 
   const handleSave = () => {
     if (!user) return;
@@ -42,6 +74,49 @@ const Profile = () => {
       phone: user?.phone || ''
     });
     setIsEditing(false);
+  };
+
+  const handleAddCar = () => {
+    if (!carFormData.make || !carFormData.model || !carFormData.color || !carFormData.licensePlate) {
+      toast({
+        title: "Error",
+        description: "Please fill in all car details.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newCar: CarData = {
+      id: Date.now().toString(),
+      make: carFormData.make,
+      model: carFormData.model,
+      color: carFormData.color,
+      licensePlate: carFormData.licensePlate,
+      addedDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      washCount: 0,
+      isPrimary: cars.length === 0
+    };
+
+    setCars([...cars, newCar]);
+    setCarFormData({ make: '', model: '', color: '', licensePlate: '' });
+    setIsAddCarOpen(false);
+    
+    toast({
+      title: "Car Added",
+      description: `${newCar.make} ${newCar.model} has been added to your profile.`
+    });
+  };
+
+  const handleSetPrimary = (carId: string) => {
+    setCars(cars.map(car => ({
+      ...car,
+      isPrimary: car.id === carId
+    })));
+    
+    toast({
+      title: "Primary Car Updated",
+      description: "Primary car has been updated successfully."
+    });
   };
 
   if (!user) {
@@ -154,24 +229,96 @@ const Profile = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Car className="h-8 w-8 text-blue-600" />
-                      <div>
-                        <div className="font-medium">Honda City</div>
-                        <div className="text-sm text-gray-600">White • DL 01 XX 1234</div>
-                        <div className="text-sm text-gray-600">Added: Jan 15, 2024</div>
+                  {cars.map((car) => (
+                    <div key={car.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Car className="h-8 w-8 text-blue-600" />
+                        <div>
+                          <div className="font-medium">{car.make} {car.model}</div>
+                          <div className="text-sm text-gray-600">{car.color} • {car.licensePlate}</div>
+                          <div className="text-sm text-gray-600">Added: {car.addedDate}</div>
+                        </div>
+                      </div>
+                      <div className="text-right space-y-1">
+                        <div className="flex gap-2">
+                          {car.isPrimary && <Badge variant="secondary">Primary</Badge>}
+                          {!car.isPrimary && (
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleSetPrimary(car.id)}
+                            >
+                              Set Primary
+                            </Button>
+                          )}
+                        </div>
+                        <div className="text-sm text-gray-600">{car.washCount} washes</div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <Badge variant="secondary">Primary</Badge>
-                      <div className="text-sm text-gray-600 mt-1">47 washes</div>
-                    </div>
-                  </div>
-                  <Button variant="outline" className="w-full">
-                    <Car className="mr-2 h-4 w-4" />
-                    Add Another Car
-                  </Button>
+                  ))}
+                  
+                  <Dialog open={isAddCarOpen} onOpenChange={setIsAddCarOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full">
+                        <Car className="mr-2 h-4 w-4" />
+                        Add Another Car
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Add New Car</DialogTitle>
+                        <DialogDescription>
+                          Add a new car to your profile for car wash services.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="make">Car Make</Label>
+                          <Input
+                            id="make"
+                            placeholder="e.g., Honda, Toyota, BMW"
+                            value={carFormData.make}
+                            onChange={(e) => setCarFormData(prev => ({ ...prev, make: e.target.value }))}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="model">Car Model</Label>
+                          <Input
+                            id="model"
+                            placeholder="e.g., City, Camry, X3"
+                            value={carFormData.model}
+                            onChange={(e) => setCarFormData(prev => ({ ...prev, model: e.target.value }))}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="color">Color</Label>
+                          <Input
+                            id="color"
+                            placeholder="e.g., White, Black, Silver"
+                            value={carFormData.color}
+                            onChange={(e) => setCarFormData(prev => ({ ...prev, color: e.target.value }))}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="licensePlate">License Plate</Label>
+                          <Input
+                            id="licensePlate"
+                            placeholder="e.g., DL 01 XX 1234"
+                            value={carFormData.licensePlate}
+                            onChange={(e) => setCarFormData(prev => ({ ...prev, licensePlate: e.target.value }))}
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsAddCarOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button onClick={handleAddCar}>
+                          Add Car
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </CardContent>
             </Card>
