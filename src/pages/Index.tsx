@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Car, Clock, Star, Users, Award, Camera, CheckCircle, ArrowRight, Sparkles, Zap, Shield, Leaf } from "lucide-react";
+import { Car, Clock, Star, Users, Award, Camera, CheckCircle, ArrowRight, Sparkles, Zap, Shield, Leaf, Building2 } from "lucide-react";
 
 const Index = () => {
   const [currentStat, setCurrentStat] = useState(0);
@@ -13,7 +12,7 @@ const Index = () => {
   const stats = [
     { number: "50K+", label: "Happy Customers", icon: Users },
     { number: "200K+", label: "Cars Washed", icon: Car },
-    { number: "25", label: "Mall Locations", icon: "🏢" },
+    { number: "25", label: "Mall Locations", icon: Building2 },
     { number: "98%", label: "Satisfaction", icon: Star }
   ];
 
@@ -193,7 +192,7 @@ const Index = () => {
               {/* Dynamic Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {stats.map((stat, index) => {
-                  const Icon = typeof stat.icon === 'string' ? null : stat.icon;
+                  const Icon = stat.icon;
                   return (
                     <div
                       key={index}
@@ -201,8 +200,7 @@ const Index = () => {
                         currentStat === index ? 'bg-blue-50 scale-105' : 'bg-white/50'
                       }`}
                     >
-                      {Icon ? <Icon className="h-6 w-6 mx-auto text-blue-500 mb-2" /> : 
-                       <div className="text-2xl mb-2">{stat.icon}</div>}
+                      <Icon className="h-6 w-6 mx-auto text-blue-500 mb-2" />
                       <div className="text-2xl font-bold stats-highlight">{stat.number}</div>
                       <div className="text-sm text-gray-600">{stat.label}</div>
                     </div>
@@ -331,10 +329,10 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 relative">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             {stats.map((stat, index) => {
-              const Icon = typeof stat.icon === 'string' ? null : stat.icon;
+              const Icon = stat.icon;
               return (
                 <div key={index} className="scroll-reveal" style={{animationDelay: `${index * 0.1}s`}}>
-                  {Icon && <Icon className="h-12 w-12 mx-auto mb-4 text-blue-200" />}
+                  <Icon className="h-12 w-12 mx-auto mb-4 text-blue-200" />
                   <div className="text-5xl font-black mb-2">{stat.number}</div>
                   <div className="text-blue-200 font-medium">{stat.label}</div>
                 </div>
