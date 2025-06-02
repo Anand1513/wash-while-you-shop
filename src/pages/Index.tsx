@@ -263,8 +263,8 @@ const Index = () => {
                 {/* Main Image Container */}
                 <div className="relative bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/30 shadow-2xl">
                   <img 
-                    src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                    alt="Modern car wash technology" 
+                    src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                    alt="Professional car wash service with sparkling clean vehicles" 
                     className="w-full h-96 object-cover rounded-2xl shadow-2xl"
                   />
                   
