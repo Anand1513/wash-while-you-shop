@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -227,31 +226,32 @@ const Index = () => {
                 </Button>
               </div>
 
-              {/* Dynamic Stats Row */}
+              {/* Enhanced Dynamic Stats Row with Hover Transitions */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-8">
                 {stats.map((stat, index) => {
                   const Icon = stat.icon;
                   return (
                     <div
                       key={index}
-                      className={`relative p-6 rounded-2xl border-2 transition-all duration-500 cursor-pointer group ${
+                      className={`relative p-6 rounded-2xl border-2 transition-all duration-500 cursor-pointer group transform hover:scale-110 hover:shadow-2xl hover:-translate-y-2 ${
                         currentStat === index 
                           ? 'bg-gradient-to-br from-blue-50 to-blue-100 border-blue-300 scale-110 shadow-xl' 
-                          : 'bg-white/80 border-gray-200 hover:border-blue-300 hover:shadow-lg'
+                          : 'bg-white/80 border-gray-200 hover:border-blue-300 hover:shadow-lg hover:bg-gradient-to-br hover:from-blue-50 hover:to-blue-100'
                       }`}
                     >
                       <div className="text-center space-y-3">
-                        <div className={`w-12 h-12 bg-gradient-to-r ${stat.color} rounded-xl flex items-center justify-center mx-auto shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        <div className={`w-12 h-12 bg-gradient-to-r ${stat.color} rounded-xl flex items-center justify-center mx-auto shadow-lg group-hover:scale-125 group-hover:rotate-6 transition-all duration-300`}>
                           <Icon className="h-6 w-6 text-white" />
                         </div>
-                        <div className="text-3xl font-black bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">
+                        <div className="text-3xl font-black bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent group-hover:from-blue-600 group-hover:to-purple-600 transition-all duration-300">
                           {stat.number}
                         </div>
-                        <div className="text-sm font-semibold text-gray-600">{stat.label}</div>
+                        <div className="text-sm font-semibold text-gray-600 group-hover:text-blue-700 transition-colors duration-300">{stat.label}</div>
                       </div>
                       {currentStat === index && (
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-2xl animate-pulse"></div>
                       )}
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
                   );
                 })}
